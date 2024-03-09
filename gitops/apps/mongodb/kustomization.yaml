@@ -8,5 +8,5 @@ images:
   - name: notarealimage
     newName: mongo:5.0
 
-patches:
+patchesStrategicMerge:
   - overrides.yaml
