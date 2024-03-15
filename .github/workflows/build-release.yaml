@@ -7,6 +7,10 @@ on:
   push:
     branches: ["main"] # Standard CI trigger when main branch is pushed
 
+env:
+  ACR_NAME: kubeworkshopacr
+  IMAGE_TAG: ${{ github.run_id }}
+
 # One job for building the app
 jobs:
   buildJob:
@@ -18,3 +22,23 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: benc-uk/smilr
+      - name: "Authenticate to access ACR"
+        uses: docker/login-action@master
+        with:
+          registry: $.azurecr.io
+          username: $
+          password: $
+
+      - name: "Build & Push: data API"
+        run: |
+          docker buildx build . -f node/data-api/Dockerfile \
+            -t $ACR_NAME.azurecr.io/smilr/data-api:$IMAGE_TAG \
+            -t $ACR_NAME.azurecr.io/smilr/data-api:latest
+          docker push $ACR_NAME.azurecr.io/smilr/data-api:$IMAGE_TAG
+
+      - name: "Build & Push: frontend"
+        run: |
+          docker buildx build . -f node/frontend/Dockerfile \
+            -t $ACR_NAME.azurecr.io/smilr/frontend:$IMAGE_TAG \
+            -t $ACR_NAME.azurecr.io/smilr/frontend:latest
+          docker push $ACR_NAME.azurecr.io/smilr/frontend:$IMAGE_TAG
