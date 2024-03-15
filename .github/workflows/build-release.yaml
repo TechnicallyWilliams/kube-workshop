@@ -25,9 +25,9 @@ jobs:
       - name: "Authenticate to access ACR"
         uses: docker/login-action@master
         with:
-          registry: $.azurecr.io
-          username: $
-          password: $
+          registry: ${{ env.ACR_NAME }}.azurecr.io
+          username: ${{ env.ACR_NAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
       - name: "Build & Push: data API"
         run: |
