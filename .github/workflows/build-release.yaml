@@ -10,6 +10,7 @@ on:
 env:
   ACR_NAME: kubeworkshopacr
   IMAGE_TAG: ${{ github.run_id }}
+  IP_ADDRESS: http://172.212.61.192/
 
 # One job for building the app
 jobs:
@@ -47,6 +48,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: buildJob
+    environment:
+      name: workshop-environment
+      url: ${{ env.IP_ADDRESS }}
     steps:
       - name: "Configure kubeconfig"
         uses: azure/k8s-set-context@v2
